@@ -1,0 +1,127 @@
+html, body {
+  min-width:600px;
+}
+
+body {
+  min-width:600px;
+  text-align:center;
+  font-family:sans-serif;
+}
+
+.frame {
+  display:inline-block;
+  width:20em;
+  height: 19em;
+  overflow: hidden;
+
+}
+
+#wrapper {
+  width: 100em;
+  position: relative;
+  left: 0em;
+}
+
+.container{
+  margin-bottom:1em;
+  float: left;
+  width:auto;
+}
+
+.station {
+  display:block;
+  width:20em;
+}
+
+.stName {
+  display:block;
+  height: 13em;
+  font-weight:bold;
+}
+
+.stName span {
+  display:block;
+  text-align:center;
+}
+
+.stName img {
+  display: block;
+  margin: auto;
+}
+
+.songName {
+  display:block;
+  height: 2em;
+  text-align:center;
+}
+
+.spinner {
+  display: none;
+  height: 2em;
+}
+
+.links {
+  display:block;
+  margin:auto;
+  text-align:center;
+}
+
+.links a {
+  height:4em;
+  width:4em;
+  display:inline-block;
+  margin:2px;
+  padding:0;
+}
+
+.refresh {
+  background: url(img/refresh.png);
+  background-size: Auto 100%;
+}
+
+.search {
+  background: url(img/search.png);
+  background-size: Auto 100%;
+}
+
+.save {
+  background: url(img/save.png);
+  background-size: Auto 100%;
+}
+
+#control {
+  position: absolute;
+  top: 9em;
+  z-index: 2;
+  width:28em;
+  height: 4em;
+  margin: 0 auto;
+  left:0;
+  right:0;
+}
+
+#control a {
+  display:block;
+  height: 100%;
+  width:4em;
+  box-shadow: inset 2px -2px 0 1px #3a3a3a;
+}
+
+#left{
+  float: left;
+  transform: rotate(45deg);
+}
+
+#right {
+  margin-left: 24em;
+  transform: rotate(225deg);
+}
+
+#hint {
+  color: grey;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  text-align: left;
+  font-size: 0.8em;
+}
