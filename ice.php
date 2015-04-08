@@ -48,7 +48,7 @@ include_once('config.php');
     }
 
 function stationRequest($name) {
-  $url = 'http://mp3.nashe.ru:80/'.$name.'-64.mp3';
+  $url = 'http://nashe2.hostingradio.ru:80/'.$name.'-128.mp3';
   $result = getMp3StreamTitle($url, 19200);
   $result = str_replace ("_VOICE","",$result);
   if (strlen($result)<=0) {
