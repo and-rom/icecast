@@ -20,6 +20,11 @@ function init() {
       addHandler(aList[i], 'click', aOnClick);
     }
 
+  var a2List = document.getElementsByClassName("save");
+    for ( var i = 0; i < aList.length; i++) {
+      addHandler(a2List[i], 'click', sOnClick);
+    }
+
   request('all');
 
 }
@@ -27,6 +32,12 @@ function init() {
 function request(data) {
   spinner_on(data);
   xmlhttp.open("GET","ice.php?station="+data,true);
+  xmlhttp.send();
+}
+
+function save(data) {
+  var song = document.getElementById(data+"songName").innerHTML;
+  xmlhttp.open("GET","savenload.php?action=save&station="+data+"&song="+song,true);
   xmlhttp.send();
 }
 
@@ -83,6 +94,10 @@ function aOnClick(event) {
   request(this.id.replace("Refresh",""));
 }
 
+function sOnClick(event) {
+  save(this.id.replace("Save",""));
+}
+
 function keyboard(event) {
   if (event.keyCode == 115) {
     request('all');
@@ -112,7 +127,7 @@ function wheel(event) {
 function moveRight()
 {
   var left =  parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
-  if (left > -1280) {
+  if (left > -1600) {
     left = left - 320;
     document.getElementById('wrapper').style.left = left + "px";
   }

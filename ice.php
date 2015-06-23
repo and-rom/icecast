@@ -88,6 +88,6 @@ else {
 
 if (isset($result)) {
   echo $result;
-  sleep(2);
+  sleep(1);
 }
 ?>
