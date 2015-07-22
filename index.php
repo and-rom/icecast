@@ -43,6 +43,15 @@ foreach ($list as $station) {
       <a href="#" id="left" onclick="moveLeft();"></a>
       <a href="#" id="right" onclick="moveRight();"></a>
     </div>
+    <div id="songs">
+<?php
+foreach ($list as $station) {
+?>
+<div class="songs" id="<?=$station?>"></div>
+<?
+}
+?>
+    </div>
     <div id="hint">
       <p>
         <strong>F4:</strong> Refresh all stations.<br \>

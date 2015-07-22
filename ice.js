@@ -26,18 +26,24 @@ function init() {
     }
 
   request('all');
+  load('all');
 
 }
 
 function request(data) {
   spinner_on(data);
-  xmlhttp.open("GET","ice.php?station="+data,true);
+  xmlhttp.open("GET","ice.php?station="+data,false);
   xmlhttp.send();
 }
 
 function save(data) {
   var song = document.getElementById(data+"songName").innerHTML;
-  xmlhttp.open("GET","savenload.php?action=save&station="+data+"&song="+song,true);
+  xmlhttp.open("GET","savenload.php?action=save&station="+data+"&song="+song,false);
+  xmlhttp.send();
+}
+
+function load(data) {
+  xmlhttp.open("GET","savenload.php?action=load&station="+data,false);
   xmlhttp.send();
 }
 
@@ -47,6 +53,7 @@ function refresh(data) {
     document.getElementById(key+"Search").href="https://www.google.ru/search?q="+data[key];
     spinner_off(key);
   }
+  
 }
 
 function spinner_on(data) {
@@ -73,6 +80,7 @@ function spinner_off(data) {
 
 //body
 var xmlhttp;
+var busy = true;
 
 if (window.XMLHttpRequest) {
   // code for IE7+, Firefox, Chrome, Opera, Safari
@@ -84,8 +92,41 @@ else {
 }
 xmlhttp.onreadystatechange=function() {
   if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+    console.log(xmlhttp.responseText);
     var data = eval("(" + xmlhttp.responseText + ")");
-    refresh(data);
+    switch (data.action) {
+      case "refresh":
+        refresh(data.response);
+        break;
+      case "save":
+        if (data.status == "error") {
+          alert(data.error_msg);
+        } else {
+          alert(data.status);
+          load(data.station);
+        }
+        break;
+      case "load":
+        console.log(typeof data.stations.jazz);
+        break;
+      default:
+        alert('Я таких значений не знаю');
+    }
+
+/*
+    if (data.hasOwnProperty('save')) {
+      if (data.save.status == "error") {
+        alert(data.save.error_msg);
+      } else {
+        alert(data.save.status);
+        load(data.save.station);
+      }
+    } else if (data.hasOwnProperty('load')) {
+      console.log(data.songs);
+    } else {
+      refresh(data);
+    }
+*/
   }
 }
 

@@ -17,7 +17,7 @@ body {
 }
 
 #wrapper {
-  width: 100em;
+  width: 120em;
   position: relative;
   left: 0em;
 }
@@ -96,8 +96,8 @@ body {
   width:28em;
   height: 4em;
   margin: 0 auto;
-  left:0;
-  right:0;
+  left:0px;
+  right:0px;
 }
 
 #control a {
@@ -120,8 +120,8 @@ body {
 #hint {
   color: grey;
   position: fixed;
-  right: 0;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   text-align: left;
   font-size: 0.8em;
 }

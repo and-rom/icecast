@@ -73,21 +73,20 @@ $q=$_GET["station"];
 if (in_array($q, $list)) {
   //$a[]=array("station" => $q,"song" => stationRequest($q));
   $a[$q]=stationRequest($q);
-  $result = json_encode($a,JSON_UNESCAPED_UNICODE);
+  //$result = json_encode($a,JSON_UNESCAPED_UNICODE);
 }
 elseif ($q == "all") {
   foreach ($list as $station) {
     //$a[]=array("station" => $station,"song" => stationRequest($station));
     $a[$station]=stationRequest($station);
-    $result = json_encode($a,JSON_UNESCAPED_UNICODE);
+    //$result = json_encode($a,JSON_UNESCAPED_UNICODE);
   }
-}
-else {
+} else {
   $result = "Wrong station!";
 }
-
-if (isset($result)) {
-  echo $result;
-  sleep(1);
-}
+$obj = new stdClass;
+$obj->action = "refresh";
+$obj->response = $a;
+echo json_encode($obj,JSON_UNESCAPED_UNICODE);;
+//  sleep(1);
 ?>
