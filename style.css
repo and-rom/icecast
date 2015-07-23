@@ -1,9 +1,9 @@
-html, body {
+/*html, body {
   min-width:600px;
-}
+  min-height:320px;
+}*/
 
 body {
-  min-width:600px;
   text-align:center;
   font-family:sans-serif;
 }
@@ -90,30 +90,32 @@ body {
 }
 
 #control {
-  position: absolute;
-  top: 9em;
-  z-index: 2;
-  width:28em;
+  z-index: -1;
+  width:80%;
+  max-width:25em;
   height: 4em;
-  margin: 0 auto;
-  left:0px;
-  right:0px;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 5em auto;
 }
 
 #control a {
   display:block;
-  height: 100%;
+  height: 4em;
   width:4em;
   box-shadow: inset 2px -2px 0 1px #3a3a3a;
 }
 
 #left{
   float: left;
-  transform: rotate(45deg);
+ transform: rotate(45deg);
 }
 
 #right {
-  margin-left: 24em;
+  float: right;
   transform: rotate(225deg);
 }
 
@@ -125,3 +127,54 @@ body {
   text-align: left;
   font-size: 0.8em;
 }
+
+.toaster_container {
+  z-index:15;
+  width: 100%;
+  height: 1.5em;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 10em auto;
+  text-align: center;
+}
+
+.toaster {
+  -webkit-border-radius: 20;
+  -moz-border-radius: 20;
+  border-radius: 20px;
+  display: inline-block;
+  color: #ffffff;
+  background: #000000;
+  padding: 5px 10px 5px 10px;
+  text-decoration: none;
+  opacity: 0.8;
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+
+}
+
+.toaster-fadein {
+  animation: fadein 2s;
+  -moz-animation: fadein 2s; /* Firefox */
+  -webkit-animation: fadein 2s; /* Safari and Chrome */
+  -o-animation: fadein 2s; /* Opera */
+}
+
+.toaster-fadeout {
+  animation: fadeout 2s;
+  -moz-animation: fadeout 2s; /* Firefox */
+  -webkit-animation: fadeout 2s; /* Safari and Chrome */
+  -o-animation: fadeout 2s; /* Opera */
+}
+
+@keyframes fadein {from {opacity:0;}to {opacity:0.8;}}
+@-moz-keyframes fadein {from {opacity:0;}to {opacity:0.8;}} /* Firefox */
+@-webkit-keyframes fadein {from {opacity:0;}to {opacity:0.8;}} /* Safari and Chrome */
+@-o-keyframes fadein {from {opacity:0;}to {opacity:0.8;}} /* Opera */
+
+@keyframes fadeout {from {opacity:0.8;}to {opacity:0;}}
+@-moz-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Firefox */
+@-webkit-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Safari and Chrome */
+@-o-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Opera */

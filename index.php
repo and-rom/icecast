@@ -7,8 +7,9 @@ include_once('config.php');
     <title>Songs Name</title>
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
-    <meta charset="utf-8" />
+<!--    <meta charset="utf-8" />-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
     <script type="text/javascript" src="ice.js"></script>
   </head>
   <body onload="init();">
@@ -21,7 +22,7 @@ foreach ($list as $station) {
         <div class="station">
           <div class="stName">
             <span><?=$names[$station]?></span>
-            <img src="img/stations/<?=$station?>.png" />
+            <a class="load" id="<?=$station?>Load" target="_blank" href="#"><img src="img/stations/<?=$station?>.png" /></a>
           </div>
           <div class="songName" id="<?=$station?>songName"></div>
           <div class="spinner" id="<?=$station?>spinner">
@@ -39,23 +40,15 @@ foreach ($list as $station) {
 ?>
       </div>
     </div>
-    <div id="control">
+   <div id="control">
       <a href="#" id="left" onclick="moveLeft();"></a>
       <a href="#" id="right" onclick="moveRight();"></a>
     </div>
-    <div id="songs">
-<?php
-foreach ($list as $station) {
-?>
-<div class="songs" id="<?=$station?>"></div>
-<?
-}
-?>
-    </div>
     <div id="hint">
       <p>
-        <strong>F4:</strong> Refresh all stations.<br \>
-        <strong>Mouse wheel:</strong> Scroll stations.
+        <strong>F4:</strong> Refresh all stations.<br />
+        <strong>Mouse wheel:</strong> Scroll stations.<br />
+        <strong>Swipe left/right:</strong> Scroll stations.
       </p>
     </div>
   </body>

@@ -2,13 +2,15 @@
 include_once('config.php');
 include_once('config_db.php');
 
-mysql_connect(DBHOST, DBUSER, DBPASS) or die("Ошибка соединения: " . mysql_error());
-mysql_set_charset("utf8") or die("Ошибка соединения: " . mysql_error());
-mysql_select_db(DBNAME) or die("Ошибка соединения: " . mysql_error());
+$link = mysqli_connect(DBHOST, DBUSER, DBPASS) or die("Ошибка соединения: " . mysqli_error($link));
+mysqli_set_charset($link,"utf8") or die("Ошибка соединения: " . mysqli_error($link));
+mysqli_select_db($link,DBNAME) or die("Ошибка соединения: " . mysqli_error($link));
 
 function save ($station,$song) {
-  $result = mysql_query("INSERT INTO ".TBNAME." (station,song)
-                               VALUES ('$station','" . mysql_real_escape_string($song) . "')");
+  GLOBAL $link;
+  $song = mysqli_real_escape_string($link,$song);
+  $query = "INSERT INTO ".TBNAME." (station,song) VALUES ('$station','$song')";
+  $result = mysqli_query($link,$query);
   $obj = new stdClass;
   $obj->action = "save";
   $obj->station = $station;
@@ -16,32 +18,21 @@ function save ($station,$song) {
     $obj->status = "ok";
   } else {
     $obj->status = "error";
-    $obj->error_msg = mysql_error();
+    $obj->error_msg = mysqli_error($link);
   }
   return json_encode($obj,JSON_UNESCAPED_UNICODE);
 }
 
 function load ($station) {
-  if ($station == "all") {
-  $query = "SELECT station,song FROM songs ORDER BY station ASC, id ASC";
-  } else {
-  $query = "SELECT station,song FROM `songs` WHERE `station`='$station'";
+  GLOBAL $link;
+  $query = "SELECT song FROM `songs` WHERE `station`='$station'";
+  $result = mysqli_query($link,$query) or die("Query failed" . mysqli_error($link));
+  header('Content-Type: text/html; charset=utf-8');
+  echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no\"><br />\n";
+  while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)) {
+    echo $row['song'] . "<br />\n";
   }
-  $result = mysql_query($query) or die("Query failed" . mysql_error());
-  $songs = array();
-  $obj = new stdClass;
-  $obj->action = "load";
-  $obj->stations = array();
-  while($row = mysql_fetch_array($result,MYSQL_ASSOC)) {
-    $obj->stations[][$row['station']][] = $row['song'];
-    //$songs[$row['station']][]= $row['song'];
-  }
-
-//  for ()
- // $obj->station = $station;
- // $obj->stations = $songs;
-  return json_encode($obj,JSON_UNESCAPED_UNICODE);
-//  return $obj;
+  return ;
 }
 
 

@@ -1,5 +1,6 @@
 <?php
 include_once('config.php');
+error_reporting(0);
     function getMp3StreamTitle($steam_url)
     {
         $result = false;
@@ -49,7 +50,7 @@ include_once('config.php');
 
 function stationRequest($name) {
   $url = 'http://nashe2.hostingradio.ru:80/'.$name.'-128.mp3';
-  $result = getMp3StreamTitle($url, 19200);
+  $result = getMp3StreamTitle($url);
   $result = str_replace ("_VOICE","",$result);
   if (strlen($result)<=0) {
     $result = "No Song.";
@@ -88,5 +89,5 @@ $obj = new stdClass;
 $obj->action = "refresh";
 $obj->response = $a;
 echo json_encode($obj,JSON_UNESCAPED_UNICODE);;
-//  sleep(1);
+sleep(1);
 ?>
