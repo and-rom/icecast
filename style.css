@@ -17,6 +17,7 @@ body {
 }
 
 #wrapper {
+  z-index: 5;
   width: 120em;
   position: relative;
   left: 0em;
@@ -90,9 +91,8 @@ body {
 }
 
 #control {
-  z-index: 15;
-  width:80%;
-  max-width:25em;
+  z-index: 0;
+  width:30em;
   height: 4em;
   position: absolute;
   top:0;
