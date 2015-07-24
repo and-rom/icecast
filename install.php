@@ -11,6 +11,7 @@
 </head>
 <body>
 <?php
+if (filesize("config_db.php") > 0) die("Установка уже проведена");
 if (!empty($_POST)) {
   if (!empty($_POST['dbhost']) & !empty($_POST['dbuser']) & !empty($_POST['dbpass']) & !empty($_POST['dbname'])) {
     $dbhost = $_POST['dbhost'];
@@ -41,6 +42,7 @@ if (!empty($_POST)) {
     fclose($file);
     echo "<a href=./>На главную</a>";
     $ok = "ok";
+    //rename("install.php","install.php_");
   }
 } 
 if (empty($_POST) | !isset($ok)) {
