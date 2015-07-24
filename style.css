@@ -92,8 +92,8 @@ body {
 
 #control {
   z-index: 0;
-  width:30em;
-  height: 4em;
+  width:25em;
+  /*height: 2em;*/
   position: absolute;
   top:0;
   bottom: 0;
@@ -104,8 +104,8 @@ body {
 
 #control a {
   display:block;
-  height: 4em;
-  width:4em;
+  height: 2.5em;
+  width:2.5em;
   box-shadow: inset 2px -2px 0 1px #3a3a3a;
 }
 
