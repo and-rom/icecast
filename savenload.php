@@ -9,7 +9,7 @@ mysqli_select_db($link,DBNAME) or die("Ошибка соединения: " . my
 function save ($station,$song) {
   GLOBAL $link;
   $song = mysqli_real_escape_string($link,$song);
-  $query = "INSERT INTO ".TBNAME." (station,song) VALUES ('$station','$song')";
+  $query = "INSERT INTO `songs` (station,song) VALUES ('$station','$song')";
   $result = mysqli_query($link,$query);
   $obj = new stdClass;
   $obj->action = "save";
