@@ -90,7 +90,7 @@ body {
 }
 
 #control {
-  z-index: -1;
+  z-index: 15;
   width:80%;
   max-width:25em;
   height: 4em;
@@ -131,7 +131,7 @@ body {
 .toaster_container {
   z-index:15;
   width: 100%;
-  height: 1.5em;
+  height: 5em;
   position: absolute;
   top:0;
   bottom: 0;
