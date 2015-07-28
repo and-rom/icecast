@@ -46,7 +46,7 @@ foreach ($list as $station) {
     </div>
     <div id="hint">
       <p>
-        <strong>F4 or swipe down:</strong> Update all stations.<br />
+        <strong>F4 or swipe up:</strong> Update all stations.<br />
         <strong>Mouse wheel:</strong> Scroll stations.<br />
         <strong>Swipe left/right:</strong> Scroll stations.
       </p>
