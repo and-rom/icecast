@@ -183,16 +183,18 @@ function spinner_off(data) {
 }
 
 function moveRight() {
-  var left =  parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
-  if (left > -1600) {
-    left = left - 320;
+  var size = parseFloat(getComputedStyle(document.getElementById('wrapper'), '').fontSize) * 20;
+  var left = parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
+  if (left > -size*5) {
+    left = left - size;
     document.getElementById('wrapper').style.left = left + "px";
   } else {toaster ("No more stations");}
 }
 function moveLeft() {
-  var left =  parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
+  var size = parseFloat(getComputedStyle(document.getElementById('wrapper'), '').fontSize) * 20;
+  var left = parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
   if (left < 0) {
-    left = left + 320;
+    left = left + size;
     document.getElementById('wrapper').style.left = left + "px";
   } else {toaster ("It's a first station");}
 }
