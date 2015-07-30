@@ -4,7 +4,7 @@ include_once('config.php');
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Songs Name</title>
+    <title>Now playing...</title>
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
 <!--    <meta charset="utf-8" />-->
