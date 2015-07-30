@@ -11,58 +11,69 @@
 </head>
 <body>
 <?php
-if (filesize("config_db.php") > 0) die("Установка уже проведена");
+$config = isset($_POST['only_config']);
 if (!empty($_POST)) {
   if (!empty($_POST['dbhost']) & !empty($_POST['dbuser']) & !empty($_POST['dbpass']) & !empty($_POST['dbname'])) {
-    $dbhost = $_POST['dbhost'];
-    $dbname = $_POST['dbname'];
-    $dbuser = $_POST['dbuser'];
-    $dbpass = $_POST['dbpass'];
-
-    $link = mysqli_connect($dbhost, $dbuser, $dbpass) or die("Ошибка соединения: " . mysqli_error($link));
-    mysqli_set_charset($link,"utf8") or die("Ошибка: " . mysqli_error($link));
-    mysqli_select_db($link,$dbname) or die("Ошибка: " . mysqli_error($link));
-    echo "Соединилсь с " . mysqli_get_host_info ($link) . "<br />";
-    echo "Открытие файла<br />";
-    $sql = file_get_contents("./icecast.sql");
-    if (!$sql) {die ("Ошибка открытия файла");}
-    echo "Обработка файла <br />";
-    mysqli_multi_query($link,$sql) or die("Ошибка: " . mysqli_error($link));
-    mysqli_close($link);
-    echo "Готово<br />";
-
-    $file = fopen("config_db.php","w");
-    $config = "<?php\n";
-    $config .= '  define("DBHOST", "' . $dbhost . '");' . "\n";
-    $config .= '  define("DBUSER", "' . $dbuser . '");' . "\n";
-    $config .= '  define("DBPASS", "' . $dbpass . '");' . "\n";
-    $config .= '  define("DBNAME", "' . $dbname . '");' . "\n";
-    $config .= "?>";
-    fwrite($file,$config);
-    fclose($file);
-    echo "<a href=./>На главную</a>";
-    $ok = "ok";
-    //rename("install.php","install.php_");
+      $dbhost = $_POST['dbhost'];
+      $dbname = $_POST['dbname'];
+      $dbuser = $_POST['dbuser'];
+      $dbpass = $_POST['dbpass'];
+    if (filesize("config_db.php") <= 0 and !$config) {
+      $link = mysqli_connect($dbhost, $dbuser, $dbpass) or die("Connection error: " . mysqli_error($link));
+      mysqli_set_charset($link,"utf8") or die("Error: " . mysqli_error($link));
+      mysqli_select_db($link,$dbname) or die("Error: " . mysqli_error($link));
+      echo "Connection established with " . mysqli_get_host_info ($link) . ".<br />";
+      echo "Opening SQL file...<br />";
+      $sql = file_get_contents("./icecast.sql");
+      if (!$sql) {die ("Error opening SQL file");}
+      echo "Processing SQL file.<br />";
+      mysqli_multi_query($link,$sql) or die("Error: " . mysqli_error($link));
+      mysqli_close($link);
+      echo "Done.<br />";
+      $config = True;
+    } 
+    if ($config) {
+      echo "Opening config file...<br />";
+      $file = fopen("config_db.php","w");
+      $config = "<?php\n";
+      $config .= '  define("DBHOST", "' . $dbhost . '");' . "\n";
+      $config .= '  define("DBUSER", "' . $dbuser . '");' . "\n";
+      $config .= '  define("DBPASS", "' . $dbpass . '");' . "\n";
+      $config .= '  define("DBNAME", "' . $dbname . '");' . "\n";
+      $config .= "?>";
+      echo "Writing config file...<br />";
+      fwrite($file,$config);
+      fclose($file);
+      echo "Config file done.<br />";
+      echo "<a href=./>Go home</a>";
+      $ok = "ok";
+    } else {
+      die("Installation has already been completed.");
+    }
+  } else {
+    die("Not all fields are filled in.");
   }
-} 
+}
+
 if (empty($_POST) | !isset($ok)) {
 ?>
   <form id="form-setup" method="post" action="<?=$_SERVER['SCRIPT_NAME']?>">
   <fieldset>
-    <legend></legend>
+    <legend>Setting up the database</legend>
 	<fieldset>
-	  <legend>Сервер БД</legend>
-	  <label for="dbhost">Логин: </label><input id="dbhost" type="text" name="dbhost"/>
+	  <legend>DB Server</legend>
+	  <label for="dbhost">User: </label><input id="dbhost" type="text" name="dbhost"/>
 	</fieldset>
 	<fieldset>
-	  <legend>Пользователь БД</legend>
-	  <label for="dbuser">Логин: </label><input id="dbuser" type="text" name="dbuser"/><br />
-	  <label for="dbpass">Пароль: </label><input id="dbpass" type="password" name="dbpass"/>
+	  <legend>DB User</legend>
+	  <label for="dbuser">User: </label><input id="dbuser" type="text" name="dbuser"/><br />
+	  <label for="dbpass">Pass: </label><input id="dbpass" type="password" name="dbpass"/>
 	</fieldset>
 	<fieldset>
-	  <legend>База данных</legend>
-	  <label for="dbname">Имя БД: </label><input id="dbname" type="text" name="dbname"/>
+	  <legend>DB</legend>
+	  <label for="dbname">DB Name: </label><input id="dbname" type="text" name="dbname"/>
 	</fieldset>
+        <input id="only_config" type="checkbox" name="only_config" checked/><label for="only_config">Only create config file</label><br />
 	<input type="submit" name="submit" value="OK"/>
   </fieldset>
   </form>
