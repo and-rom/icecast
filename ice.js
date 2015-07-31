@@ -1,4 +1,5 @@
 /* Body */
+var name;
 var xmlhttp;
 var xDown,yDown,xUp,yUp = null;
 
@@ -32,6 +33,10 @@ xmlhttp.onreadystatechange=function() {
 }
 /* Init */
 function init() {
+  username = getCookie("username");
+  if(username) {
+    document.getElementById("user-name").innerHTML = username;
+  }
   addHandler(window, 'DOMMouseScroll', wheel); /* Gecko */
   //addHandler(window, 'mousewheel', wheel); /* Opera */
   addHandler(document, 'mousewheel', wheel); /* IE */
@@ -47,7 +52,7 @@ function init() {
   for ( var i = 0; i < aList.length; i++) {addHandler(a2List[i], 'click', sOnClick);}
 
   var a3List = document.getElementsByClassName("load");
-  for ( var i = 0; i < aList.length; i++) {a3List[i].href="savenload.php?action=load&station=" + a3List[i].id.replace("Load","");}
+  for ( var i = 0; i < aList.length; i++) {addHandler(a3List[i], 'click', lOnClick);}
 
   addHandler(document.getElementById("hint"), 'click', function(event){toaster("test")});
 
@@ -74,6 +79,11 @@ event.stopImmediatePropagation();
 function sOnClick(event) {
   console.log("click")
   save(this.id.replace("Save",""));
+}
+
+function lOnClick(event) {
+  console.log("click")
+  load(this.id.replace("Load",""));
 }
 
 function keyboard(event) {
@@ -146,15 +156,19 @@ function request(data) {
   if (data == "all") {var msg = "Updating all stations...";} else {var msg = "Updating...";}
   toaster (msg);
   spinner_on(data);
-  xmlhttp.open("GET","ice.php?station="+data,true);
+  xmlhttp.open("GET","ice.php?action=request&station="+data,true);
   xmlhttp.send();
 }
 
 function save(data) {
+  if(username) {
   toaster ("Saving...");
   var song = document.getElementById(data+"songName").innerHTML;
-  xmlhttp.open("GET","savenload.php?action=save&station="+data+"&song="+song,true);
+  xmlhttp.open("GET","ice.php?user=" + username + "&action=save&station="+data+"&song="+song,true);
   xmlhttp.send();
+  } else {
+     toaster ("Please, register!");
+  }
 }
 
 function refresh(data) {
@@ -162,6 +176,15 @@ function refresh(data) {
     document.getElementById(key+"songName").innerHTML=data[key];
     document.getElementById(key+"Search").href="https://www.google.ru/search?q="+data[key];
     spinner_off(key);
+  }
+}
+
+function load(data) {
+  if(username) {
+    var win = window.open("ice.php?user=" + username + "&action=load&station=" + data, '_blank');
+    win.focus();
+  } else {
+     toaster ("Please, register!");
   }
 }
 
@@ -212,4 +235,93 @@ function toaster(msg) {
   
   setTimeout(function(){toaster.className = toaster.className.replace("toaster-fadein", "toaster-fadeout" );}, 2000);
   setTimeout(function(){document.body.removeChild(toaster_container);}, 4000);
+}
+function user() {
+  var reg_container = document.createElement('div');
+  var inputs_container = document.createElement('div');
+  var reg_name_input = document.createElement('input');
+  var reg_submit = document.createElement('input');
+  var reg_cancel = document.createElement('input');
+
+  reg_container.setAttribute('id', 'reg_container');
+
+  inputs_container.setAttribute('id', 'inputs_container');
+
+  reg_name_input.setAttribute('id', 'reg_name_input');
+  reg_name_input.setAttribute('type',"text");
+  reg_name_input.setAttribute('name',"username");
+
+  reg_submit.setAttribute('id', 'reg_submit');
+  reg_submit.setAttribute('type',"button");
+  reg_submit.setAttribute('value',"Register");
+
+  reg_cancel.setAttribute('id', 'reg_cancel');
+  reg_cancel.setAttribute('type',"button");
+  reg_cancel.setAttribute('value',"Cancel");
+
+  addHandler(reg_cancel, 'click',   close);
+  addHandler(reg_submit, 'click', register);
+  addHandler(reg_name_input, 'keyup', function (event){if (event.keyCode == "13") register();});
+
+  inputs_container.appendChild(reg_name_input);
+  inputs_container.appendChild(reg_submit);
+  inputs_container.appendChild(reg_cancel);
+  reg_container.appendChild(inputs_container);
+
+  document.body.appendChild(reg_container);
+  reg_name_input.focus();
+}
+
+function register() {
+  username = document.getElementById('reg_name_input').value;
+  if(username) {
+    date = new Date();
+    date.setMonth(date.getMonth() + 12);
+    setCookie("username", username,{expires:date})
+    toaster ("Registered successfully");
+    document.getElementById("user-name").innerHTML = username;
+  } else {
+    toaster ("User name is empty. Please try again.");
+  }
+  close();
+}
+
+function close() {
+  document.body.removeChild(document.getElementById('reg_container'));
+}
+
+function getCookie(name) {
+  var matches = document.cookie.match(new RegExp(
+    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+  ));
+  return matches ? decodeURIComponent(matches[1]) : undefined;
+}
+
+function setCookie(name, value, options) {
+  options = options || {};
+
+  var expires = options.expires;
+
+  if (typeof expires == "number" && expires) {
+    var d = new Date();
+    d.setTime(d.getTime() + expires * 1000);
+    expires = options.expires = d;
+  }
+  if (expires && expires.toUTCString) {
+    options.expires = expires.toUTCString();
+  }
+
+  value = encodeURIComponent(value);
+
+  var updatedCookie = name + "=" + value;
+
+  for (var propName in options) {
+    updatedCookie += "; " + propName;
+    var propValue = options[propName];
+    if (propValue !== true) {
+      updatedCookie += "=" + propValue;
+    }
+  }
+
+  document.cookie = updatedCookie;
 }

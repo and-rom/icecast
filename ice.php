@@ -1,6 +1,55 @@
 <?php
 include_once('config.php');
+include_once('config_db.php');
 error_reporting(0);
+
+function connect () {
+  $link = mysqli_connect(DBHOST, DBUSER, DBPASS) or die("Connection error: " . mysqli_error($link));
+  mysqli_set_charset($link,"utf8") or die("Error: " . mysqli_error($link));
+  mysqli_select_db($link,DBNAME) or die("Error: " . mysqli_error($link));
+  return $link;
+}
+
+function save ($station,$song,$username) {
+  if (!empty($username) or !empty($song)) {
+    $link = connect();
+    $song = mysqli_real_escape_string($link,$song);
+    $query = "INSERT INTO `songs` (station,song,user) VALUES ('$station','$song','$username')";
+    $result = mysqli_query($link,$query);
+    $err_msg = ($result ? "" : mysqli_error($link));
+  } else {
+    $err_msg = "No username or song given.";
+  }
+  $obj = new stdClass;
+  $obj->action = "save";
+  $obj->station = $station;
+  if (empty($err_msg)) {
+    $obj->status = "ok";
+  } else {
+    $obj->status = "error";
+    $obj->error_msg = $err_msg;
+  }
+  return json_encode($obj,JSON_UNESCAPED_UNICODE);
+}
+
+function load ($station,$username) {
+  if (!empty($username)) {
+    $link = connect();
+    $query = "SELECT song FROM `songs` WHERE `station`='$station' AND `user`='$username'";
+    $result = mysqli_query($link,$query) or die("Query failed" . mysqli_error($link));
+    header('Content-Type: text/html; charset=utf-8');
+    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no\"><br />\n";
+    while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)) {
+      echo $row['song'] . "<br />\n";
+    }
+    return ;
+  } else {
+    echo "No username given.";
+    return ;
+  }
+}
+
+
     function getMp3StreamTitle($steam_url)
     {
         $result = false;
@@ -69,25 +118,50 @@ function stationRequest($name) {
   return $result;
 }
 
-$q=$_GET["station"];
-
-if (in_array($q, $list)) {
-  //$a[]=array("station" => $q,"song" => stationRequest($q));
-  $a[$q]=stationRequest($q);
-  //$result = json_encode($a,JSON_UNESCAPED_UNICODE);
-}
-elseif ($q == "all") {
-  foreach ($list as $station) {
-    //$a[]=array("station" => $station,"song" => stationRequest($station));
-    $a[$station]=stationRequest($station);
-    //$result = json_encode($a,JSON_UNESCAPED_UNICODE);
+if (!empty($_GET) and isset($_GET["station"]) and isset($_GET["action"])){
+  $action=$_GET["action"];
+  $station=$_GET["station"];
+  $username=($_GET["user"] ? $_GET["user"] : "");
+  if (in_array($station, $list) or $station == "all") {
+    switch ($action) {
+      case "request":
+        if ($station == "all") {
+          foreach ($list as $station) {
+            $stations[$station]=stationRequest($station);
+          }
+        } else {
+           $stations[$station]=stationRequest($station);
+        }
+        $obj = new stdClass;
+        $obj->action = "refresh";
+        $obj->response = $stations;
+        $result = json_encode($obj,JSON_UNESCAPED_UNICODE);;
+        break;
+      case "save":
+        $result = save ($station,($_GET["song"] ? $_GET["song"] : ""),$username);
+        break;
+      case "load":
+        $result = load ($station,$username);
+        break;
+      case "list":
+        $obj = new stdClass;
+        $obj->action = "list";
+        $obj->stations = $list;
+        $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
+        break;
+      default:
+        $result = "Wrong action.";
+        break;
+    }
+  } else {
+    $result = "Wrong station.";
   }
 } else {
-  $result = "Wrong station!";
+  $result ="No action os station given.";
 }
-$obj = new stdClass;
-$obj->action = "refresh";
-$obj->response = $a;
-echo json_encode($obj,JSON_UNESCAPED_UNICODE);;
-sleep(1);
+
+if (isset($result)) {
+  echo $result;
+  sleep(1);
+}
 ?>
