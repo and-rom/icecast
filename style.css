@@ -8,6 +8,24 @@ body {
   font-family:sans-serif;
 }
 
+#user {
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  text-align: center;
+  margin-top: .5em;
+  margin-right: .5em;
+}
+#user-btn *{
+  display:block;
+  color: grey;
+}
+
+#user-btn img {
+  height:2em;
+  width:2em;
+}
+
 .frame {
   display:inline-block;
   width:20em;
@@ -178,3 +196,31 @@ body {
 @-moz-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Firefox */
 @-webkit-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Safari and Chrome */
 @-o-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Opera */
+
+
+
+#reg_container {
+  z-index:20;
+  width: 100%;
+  height: 20em;
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 2em auto;
+  text-align: center;
+}
+
+#inputs_container {
+  background: #ffffff;
+  display: inline-block;
+  border: 1px solid black;
+  padding: 5em;
+}
+
+#reg_name_input {
+}
+
+#reg_name_input {
+}
