@@ -13,6 +13,9 @@ include_once('config.php');
     <script type="text/javascript" src="ice.js"></script>
   </head>
   <body onload="init();">
+    <div id="user">
+      <a href="#" id="user-btn" onclick="user();"><img src="img/user.png" /><span id="user-name"></span></a>
+    </div>
     <div class="frame">
       <div id="wrapper" >
 <?php
@@ -22,7 +25,7 @@ foreach ($list as $station) {
         <div class="station">
           <div class="stName">
             <span><?=$names[$station]?></span>
-            <a class="load" id="<?=$station?>Load" target="_blank" href="#"><img src="img/stations/<?=$station?>.png" /></a>
+            <a class="load" id="<?=$station?>Load" href="#"><img src="img/stations/<?=$station?>.png" /></a>
           </div>
           <div class="songName" id="<?=$station?>songName"></div>
           <div class="spinner" id="<?=$station?>spinner">
