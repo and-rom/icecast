@@ -124,7 +124,9 @@ body {
   display:block;
   height: 2.5em;
   width:2.5em;
-  box-shadow: inset 2px -2px 0 1px #3a3a3a;
+  border-width: 0 0 2px 2px;
+  border-style: solid;
+  border-color: black;
 }
 
 #left{
