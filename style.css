@@ -1,7 +1,8 @@
-/*html, body {
-  min-width:600px;
-  min-height:320px;
-}*/
+html, body {
+  /*min-width:600px;
+  min-height:320px;*/
+  overflow: hidden;
+}
 
 body {
   text-align:center;
@@ -29,7 +30,7 @@ body {
 .frame {
   display:inline-block;
   width:20em;
-  height: 19em;
+  height: 22em;
   overflow: hidden;
 
 }
@@ -77,6 +78,20 @@ body {
 .spinner {
   display: none;
   height: 2em;
+}
+
+.dot {
+  font-size:18pt;
+  color: white;
+  text-shadow: 0px 0px 2px black;
+}
+
+.dot:before {
+  content:'\25CF';
+}
+
+.dot-active {
+  color: black;
 }
 
 .links {
@@ -163,7 +178,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  margin: 10em auto;
+  margin: 22em auto;
   text-align: center;
 }
 
@@ -242,7 +257,7 @@ body {
   right:0;
   height:2em;
   width:2em;
-  background: url(img/remove.png);
+  background: url(img/close.png);
   background-size: Auto 100%;
 }
 

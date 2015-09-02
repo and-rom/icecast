@@ -32,6 +32,15 @@ foreach ($list as $station) {
             <img id="img-spinner" src="spinner.gif" alt="Loading"/>
           </div>
           </div>
+          <div calss="car">
+<?php
+  for ($i = 0; $i < count($list); $i++) {
+?>
+          <span class="dot<?=($list[$i] == $station ? " dot-active" : "");?>"></span>
+<?
+  }
+?>
+          </div>
           <div class="links">
             <a class="refresh"  id="<?=$station?>Refresh" href="#" title="Обновить"></a>
             <a class="search" id="<?=$station?>Search" target="_blank" href="#" title="Поиск"></a>
@@ -44,8 +53,8 @@ foreach ($list as $station) {
       </div>
     </div>
    <div id="control">
-      <a href="#" id="left" onclick="moveLeft();"></a>
-      <a href="#" id="right" onclick="moveRight();"></a>
+      <a href="#" id="left" title="Влево" onclick="moveLeft();"></a>
+      <a href="#" id="right" title="Вправо" onclick="moveRight();"></a>
     </div>
     <div id="hint">
       <p>

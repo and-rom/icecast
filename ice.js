@@ -12,12 +12,13 @@ var strings = {
   'PLS_REG':        'Пожалуйста, зарегистрируйтесь.',
   'OK_REG':         'Регистрация прошла успешно.',
   'USR_NAME_EMPTY': 'Имя пользователя не заполнено.',
-  'FIRST':          'Первая радиостанция.',
-  'LAST':           'Последняя радиостанция.',
   'ALREADY_REG':    'Вы уже зарегистрированы.',
   'REG':            'Регистрация',
   'CANCEL':         'Отмена',
-  'EMPTY':          'Нет сохраненных композиций.'
+  'EMPTY':          'Нет сохраненных композиций.',
+  'SEARCH':         'Поиск',
+  'REMOVE':         'Удалить',
+  'CLOSE':          'Закрыть'
 };
 
 if (window.XMLHttpRequest) {
@@ -187,6 +188,7 @@ function display(data) {
   var song_list_close = document.createElement('a');
   song_list_close.setAttribute('id', 'close');
   song_list_close.setAttribute("href","#");
+  song_list_close.setAttribute("title",strings.CLOSE);
   addHandler(song_list_close, 'click', list_close);
 
   song_list_container.appendChild(song_list_close);
@@ -202,10 +204,12 @@ function display(data) {
       var song_list_name = document.createElement('span');
 
       song_list_search.setAttribute("target","_blank");
+      song_list_search.setAttribute("class","search");
+      song_list_search.setAttribute("title",strings.SEARCH);
       song_list_remove.setAttribute("id",data[i].id);
       song_list_remove.setAttribute("href","#");
-      song_list_search.setAttribute("class","search");
       song_list_remove.setAttribute("class","remove");
+      song_list_remove.setAttribute("title",strings.REMOVE);
 
       song_list_song.appendChild(song_list_search);
       song_list_song.appendChild(song_list_remove);
@@ -266,8 +270,6 @@ function moveRight() {
   if (left > -size*5) {
     left = left - size;
     document.getElementById('wrapper').style.left = left + "px";
-  } else {
-    toaster (strings.LAST);
   }
 }
 
@@ -277,8 +279,6 @@ function moveLeft() {
   if (left < 0) {
     left = left + size;
     document.getElementById('wrapper').style.left = left + "px";
-  } else {
-    toaster (strings.FIRST);
   }
 }
 
