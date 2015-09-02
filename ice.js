@@ -3,31 +3,47 @@ var name;
 var xmlhttp;
 var xDown,yDown,xUp,yUp = null;
 
+var strings = {
+  'SAVED':          'Сохранено',
+  'SAVING':         'Сохранение...',
+  'TEST':           'Тест',
+  'UPD_ALL':        'Обновление всех радиостанций...',
+  'UPD':            'Обновление...',
+  'PLS_REG':        'Пожалуйста, зарегистрируйтесь.',
+  'OK_REG':         'Регистрация прошла успешно.',
+  'USR_NAME_EMPTY': 'Имя пользователя не заполнено.',
+  'FIRST':          'Первая радиостанция.',
+  'LAST':           'Последняя радиостанция.',
+  'ALREADY_REG':    'Вы уже зарегистрированы.',
+  'REG':            'Регистрация',
+  'CANCEL':         'Отмена',
+  'EMPTY':          'Нет сохраненных композиций.'
+};
+
 if (window.XMLHttpRequest) {
   /* code for IE7+, Firefox, Chrome, Opera, Safari */
-  xmlhttp=new XMLHttpRequest();
+  xmlhttp = new XMLHttpRequest();
 }
 else {
   /* code for IE6, IE5 */
-  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 }
 xmlhttp.onreadystatechange=function() {
   if (xmlhttp.readyState==4 && xmlhttp.status==200) {
-    //console.log(xmlhttp.responseText);
     var data = eval("(" + xmlhttp.responseText + ")");
     switch (data.action) {
       case "refresh":
         refresh(data.response);
         break;
       case "save":
-          var msg = (data.status == "ok" ? "Saved" : (data.status == "error" ? data.error_msg : "???"))
+          var msg = (data.status == "ok" ? strings.SAVED : (data.status == "error" ? data.error_msg : "???"))
           toaster(msg);
         break;
       case "load":
-        console.log(typeof data.stations.jazz);
+        display(data.songs);
         break;
       default:
-        alert('Я таких значений не знаю');
+        console.log('Действие указано не верно');
     }
   }
 }
@@ -54,7 +70,7 @@ function init() {
   var a3List = document.getElementsByClassName("load");
   for ( var i = 0; i < aList.length; i++) {addHandler(a3List[i], 'click', lOnClick);}
 
-  addHandler(document.getElementById("hint"), 'click', function(event){toaster("test")});
+  addHandler(document.getElementById("hint"), 'click', function(event){toaster(strings.TEST)});
 
   request('all');
 }
@@ -64,25 +80,22 @@ function addHandler(object, event, handler, useCapture) {
         object.addEventListener(event, handler, useCapture ? useCapture : false);
     } else if (object.attachEvent) {
         object.attachEvent('on' + event, handler);
-    } else alert("Add handler is not supported");
+    } else console.log("Add handler is not supported");
 }
 
 /* Handlers */
 function aOnClick(event) {
-event.preventDefault();
-event.stopPropagation();
-event.stopImmediatePropagation();
-  console.log("click")
+  event.preventDefault();
+  event.stopPropagation();
+  event.stopImmediatePropagation();
   request(this.id.replace("Refresh",""));
 }
 
 function sOnClick(event) {
-  console.log("click")
   save(this.id.replace("Save",""));
 }
 
 function lOnClick(event) {
-  console.log("click")
   load(this.id.replace("Load",""));
 }
 
@@ -107,13 +120,11 @@ function wheel(event) {
 }
 
 function touchStart(evt) {
-console.log("start")
   xDown = evt.touches[0].clientX;
   yDown = evt.touches[0].clientY;
 }
 
 function touchMove(evt) {
-console.log("move")
   if ( ! xDown || ! yDown ) {return;}
   xUp = evt.touches[0].clientX;
   yUp = evt.touches[0].clientY;
@@ -121,28 +132,19 @@ console.log("move")
 
 function touchEnd(evt) {
   if ( ! xUp || ! yUp ) {return;}
-console.log("end")
   var xDiff = xDown - xUp;
   var yDiff = yDown - yUp;
-console.log("xDiff " + xDiff)
-console.log("yDiff " + yDiff)
-console.log("abs xDiff " + Math.abs( xDiff ))
-console.log("abs yDiff " + Math.abs( yDiff ))
   if ( Math.abs( xDiff ) > Math.abs( yDiff ) ) {
     if ( xDiff > 100 ) {
-console.log("right\n")
       moveRight();
     } else if (xDiff < -100) {
-console.log("left\n")
       moveLeft();
     }
   } else {
     if ( yDiff > 100 ) {
-      console.log("up\n")
       request('all');
     } else if (yDiff < -100) {
     /* down swipe */
-console.log("down\n")
     }
   }
   xDown = null;
@@ -152,8 +154,7 @@ console.log("down\n")
 }
 
 function request(data) {
-  console.log(data)
-  if (data == "all") {var msg = "Updating all stations...";} else {var msg = "Updating...";}
+  if (data == "all") {var msg = strings.UPD_ALL;} else {var msg = strings.UPD;}
   toaster (msg);
   spinner_on(data);
   xmlhttp.open("GET","ice.php?action=request&station="+data,true);
@@ -162,12 +163,12 @@ function request(data) {
 
 function save(data) {
   if(username) {
-  toaster ("Saving...");
+  toaster (strings.SAVING);
   var song = document.getElementById(data+"songName").innerHTML;
   xmlhttp.open("GET","ice.php?user=" + username + "&action=save&station="+data+"&song="+song,true);
   xmlhttp.send();
   } else {
-     toaster ("Please, register!");
+     toaster (strings.PLS_REG);
   }
 }
 
@@ -179,12 +180,66 @@ function refresh(data) {
   }
 }
 
+function display(data) {
+  var song_list_container = document.createElement('div');
+  song_list_container.setAttribute('id', 'songs-list');
+
+  var song_list_close = document.createElement('a');
+  song_list_close.setAttribute('id', 'close');
+  song_list_close.setAttribute("href","#");
+  addHandler(song_list_close, 'click', list_close);
+
+  song_list_container.appendChild(song_list_close);
+
+
+  if (data.length > 0 ){
+    var song_list = document.createElement('ul');
+    song_list_container.appendChild(song_list);
+    for (i = 0; i < data.length; ++i) {
+      var song_list_song = document.createElement('li');
+      var song_list_search = document.createElement('a');
+      var song_list_remove = document.createElement('a');
+      var song_list_name = document.createElement('span');
+
+      song_list_search.setAttribute("target","_blank");
+      song_list_remove.setAttribute("id",data[i].id);
+      song_list_remove.setAttribute("href","#");
+      song_list_search.setAttribute("class","search");
+      song_list_remove.setAttribute("class","remove");
+
+      song_list_song.appendChild(song_list_search);
+      song_list_song.appendChild(song_list_remove);
+      song_list_song.appendChild(song_list_name);
+
+      song_list_search.href="https://www.google.ru/search?q="+data[i].song;
+      addHandler(song_list_remove, 'click', remove);
+      song_list_name.innerHTML=data[i].song;
+
+      song_list.appendChild(song_list_song);
+    }
+
+  } else {
+    var song_list_empty = document.createElement('p');
+    song_list_empty.innerHTML=strings.EMPTY;
+    song_list_container.appendChild(song_list_empty);
+  }
+    document.body.appendChild(song_list_container);
+}
+
+function remove() {
+  consoloe.log("remove");
+}
+
+function list_close() {
+  document.body.removeChild(document.getElementById("songs-list"));
+}
+
 function load(data) {
   if(username) {
-    var win = window.open("ice.php?user=" + username + "&action=load&station=" + data, '_blank');
-    win.focus();
+    xmlhttp.open("GET","ice.php?user=" + username + "&action=load&station=" + data,true);
+    xmlhttp.send();
   } else {
-     toaster ("Please, register!");
+    toaster (strings.PLS_REG);
   }
 }
 
@@ -211,15 +266,20 @@ function moveRight() {
   if (left > -size*5) {
     left = left - size;
     document.getElementById('wrapper').style.left = left + "px";
-  } else {toaster ("No more stations");}
+  } else {
+    toaster (strings.LAST);
+  }
 }
+
 function moveLeft() {
   var size = parseFloat(getComputedStyle(document.getElementById('wrapper'), '').fontSize) * 20;
   var left = parseInt(window.getComputedStyle(document.getElementById('wrapper')).left);
   if (left < 0) {
     left = left + size;
     document.getElementById('wrapper').style.left = left + "px";
-  } else {toaster ("It's a first station");}
+  } else {
+    toaster (strings.FIRST);
+  }
 }
 
 function toaster(msg) {
@@ -236,40 +296,45 @@ function toaster(msg) {
   setTimeout(function(){toaster.className = toaster.className.replace("toaster-fadein", "toaster-fadeout" );}, 2000);
   setTimeout(function(){document.body.removeChild(toaster_container);}, 4000);
 }
+
 function user() {
-  var reg_container = document.createElement('div');
-  var inputs_container = document.createElement('div');
-  var reg_name_input = document.createElement('input');
-  var reg_submit = document.createElement('input');
-  var reg_cancel = document.createElement('input');
+  if(!username) {
+    var reg_container = document.createElement('div');
+    var inputs_container = document.createElement('div');
+    var reg_name_input = document.createElement('input');
+    var reg_submit = document.createElement('input');
+    var reg_cancel = document.createElement('input');
 
-  reg_container.setAttribute('id', 'reg_container');
+    reg_container.setAttribute('id', 'reg_container');
 
-  inputs_container.setAttribute('id', 'inputs_container');
+    inputs_container.setAttribute('id', 'inputs_container');
 
-  reg_name_input.setAttribute('id', 'reg_name_input');
-  reg_name_input.setAttribute('type',"text");
-  reg_name_input.setAttribute('name',"username");
+    reg_name_input.setAttribute('id', 'reg_name_input');
+    reg_name_input.setAttribute('type',"text");
+    reg_name_input.setAttribute('name',"username");
 
-  reg_submit.setAttribute('id', 'reg_submit');
-  reg_submit.setAttribute('type',"button");
-  reg_submit.setAttribute('value',"Register");
+    reg_submit.setAttribute('id', 'reg_submit');
+    reg_submit.setAttribute('type',"button");
+    reg_submit.setAttribute('value',strings.REG);
 
-  reg_cancel.setAttribute('id', 'reg_cancel');
-  reg_cancel.setAttribute('type',"button");
-  reg_cancel.setAttribute('value',"Cancel");
+    reg_cancel.setAttribute('id', 'reg_cancel');
+    reg_cancel.setAttribute('type',"button");
+    reg_cancel.setAttribute('value',strings.CANCEL);
 
-  addHandler(reg_cancel, 'click',   close);
-  addHandler(reg_submit, 'click', register);
-  addHandler(reg_name_input, 'keyup', function (event){if (event.keyCode == "13") register();});
+    addHandler(reg_cancel, 'click',   close);
+    addHandler(reg_submit, 'click', register);
+    addHandler(reg_name_input, 'keyup', function (event) {if (event.keyCode == "13") register();});
 
-  inputs_container.appendChild(reg_name_input);
-  inputs_container.appendChild(reg_submit);
-  inputs_container.appendChild(reg_cancel);
-  reg_container.appendChild(inputs_container);
+    inputs_container.appendChild(reg_name_input);
+    inputs_container.appendChild(reg_submit);
+    inputs_container.appendChild(reg_cancel);
+    reg_container.appendChild(inputs_container);
 
-  document.body.appendChild(reg_container);
-  reg_name_input.focus();
+    document.body.appendChild(reg_container);
+    reg_name_input.focus();
+  } else {
+    toaster (strings.ALREADY_REG);
+  }
 }
 
 function register() {
@@ -278,10 +343,10 @@ function register() {
     date = new Date();
     date.setMonth(date.getMonth() + 12);
     setCookie("username", username,{expires:date})
-    toaster ("Registered successfully");
+    toaster (strings.OK_REG);
     document.getElementById("user-name").innerHTML = username;
   } else {
-    toaster ("User name is empty. Please try again.");
+    toaster (strings.USR_NAME_EMPTY);
   }
   close();
 }
@@ -291,17 +356,13 @@ function close() {
 }
 
 function getCookie(name) {
-  var matches = document.cookie.match(new RegExp(
-    "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-  ));
+  var matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
   return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
 function setCookie(name, value, options) {
   options = options || {};
-
   var expires = options.expires;
-
   if (typeof expires == "number" && expires) {
     var d = new Date();
     d.setTime(d.getTime() + expires * 1000);
@@ -310,11 +371,8 @@ function setCookie(name, value, options) {
   if (expires && expires.toUTCString) {
     options.expires = expires.toUTCString();
   }
-
   value = encodeURIComponent(value);
-
   var updatedCookie = name + "=" + value;
-
   for (var propName in options) {
     updatedCookie += "; " + propName;
     var propValue = options[propName];
@@ -322,6 +380,5 @@ function setCookie(name, value, options) {
       updatedCookie += "=" + propValue;
     }
   }
-
   document.cookie = updatedCookie;
 }

@@ -4,17 +4,17 @@ include_once('config.php');
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Now playing...</title>
+    <title>Сейчас играет...</title>
     <link rel="icon" href="img/favicon.ico" type="image/x-icon"><link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
-<!--    <meta charset="utf-8" />-->
+    <!--<meta charset="utf-8" />-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=0.8, maximum-scale=1.0, user-scalable=no">
     <script type="text/javascript" src="ice.js"></script>
   </head>
   <body onload="init();">
     <div id="user">
-      <a href="#" id="user-btn" onclick="user();"><img src="img/user.png" /><span id="user-name"></span></a>
+      <a href="#" id="user-btn" onclick="user();"  title="Войти или зарегистрироваться"><img src="img/user.png" /><span id="user-name"></span></a>
     </div>
     <div class="frame">
       <div id="wrapper" >
@@ -25,7 +25,7 @@ foreach ($list as $station) {
         <div class="station">
           <div class="stName">
             <span><?=$names[$station]?></span>
-            <a class="load" id="<?=$station?>Load" href="#"><img src="img/stations/<?=$station?>.png" /></a>
+            <a class="load" id="<?=$station?>Load" href="#"  title="Сохраненные композиции"><img src="img/stations/<?=$station?>.png" /></a>
           </div>
           <div class="songName" id="<?=$station?>songName"></div>
           <div class="spinner" id="<?=$station?>spinner">
@@ -33,9 +33,9 @@ foreach ($list as $station) {
           </div>
           </div>
           <div class="links">
-            <a class="refresh"  id="<?=$station?>Refresh" href="#"></a>
-            <a class="search" id="<?=$station?>Search" target="_blank" href="#"></a>
-            <a class="save" id="<?=$station?>Save" href="#"></a>
+            <a class="refresh"  id="<?=$station?>Refresh" href="#" title="Обновить"></a>
+            <a class="search" id="<?=$station?>Search" target="_blank" href="#" title="Поиск"></a>
+            <a class="save" id="<?=$station?>Save" href="#" title="Сохранить"></a>
           </div>
         </div>
 <?
@@ -49,9 +49,8 @@ foreach ($list as $station) {
     </div>
     <div id="hint">
       <p>
-        <strong>F4 or swipe up:</strong> Update all stations.<br />
-        <strong>Mouse wheel:</strong> Scroll stations.<br />
-        <strong>Swipe left/right:</strong> Scroll stations.
+        <strong>F4, смыхивание вверх:</strong><br />Обновить все радиостанции.<br />
+        <strong>Колесо мышки, смахивание влево или вправо:</strong><br />Прокрутка радиостанций.<br />
       </p>
     </div>
   </body>

@@ -33,20 +33,28 @@ function save ($station,$song,$username) {
 }
 
 function load ($station,$username) {
+    $obj = new stdClass;
+    $obj->action = "load";
+    $obj->station = $station;
   if (!empty($username)) {
     $link = connect();
-    $query = "SELECT song FROM `songs` WHERE `station`='$station' AND `user`='$username'";
-    $result = mysqli_query($link,$query) or die("Query failed" . mysqli_error($link));
-    header('Content-Type: text/html; charset=utf-8');
-    echo "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no\"><br />\n";
-    while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)) {
-      echo $row['song'] . "<br />\n";
+    $query = "SELECT song,id FROM `songs` WHERE `station`='$station' AND `user`='$username'";
+    $result = mysqli_query($link,$query);
+    $err_msg = ($result ? "" : mysqli_error($link));
+    if (empty($err_msg)) {
+      $obj->songs = [];
+      while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)) {
+         $obj->songs[] = $row;
+      }
+    } else {
+      $obj->status = "error";
+      $obj->error_msg = $err_msg;
     }
-    return ;
   } else {
-    echo "No username given.";
-    return ;
+      $obj->status = "error";
+      $obj->error_msg = "No username given.";
   }
+  return json_encode($obj,JSON_UNESCAPED_UNICODE);
 }
 
 
@@ -150,17 +158,27 @@ if (!empty($_GET) and isset($_GET["station"]) and isset($_GET["action"])){
         $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
         break;
       default:
-        $result = "Wrong action.";
+        $obj = new stdClass;
+        $obj->status = "error";
+        $obj->error_msg = "Wrong action.";
+        $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
         break;
     }
   } else {
-    $result = "Wrong station.";
+    $obj = new stdClass;
+    $obj->status = "error";
+    $obj->error_msg = "Wrong station.";
+    $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
   }
 } else {
-  $result ="No action os station given.";
+  $obj = new stdClass;
+  $obj->status = "error";
+  $obj->error_msg = "No action os station given.";
+  $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
 }
 
 if (isset($result)) {
+  header('Content-Type: application/json');
   echo $result;
   sleep(1);
 }

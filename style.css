@@ -108,6 +108,11 @@ body {
   background-size: Auto 100%;
 }
 
+.remove {
+  background: url(img/remove.png);
+  background-size: Auto 100%;
+}
+
 #control {
   z-index: 0;
   width:25em;
@@ -146,6 +151,7 @@ body {
   bottom: 0px;
   text-align: left;
   font-size: 0.8em;
+  padding-right: .5em;
 }
 
 .toaster_container {
@@ -172,7 +178,6 @@ body {
   text-decoration: none;
   opacity: 0.8;
   filter: alpha(opacity=80); /* For IE8 and earlier */
-
 }
 
 .toaster-fadein {
@@ -199,8 +204,6 @@ body {
 @-webkit-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Safari and Chrome */
 @-o-keyframes fadeout {from {opacity:0.8;}to {opacity:0;}} /* Opera */
 
-
-
 #reg_container {
   z-index:20;
   width: 100%;
@@ -221,8 +224,51 @@ body {
   padding: 5em;
 }
 
-#reg_name_input {
+#songs-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  z-index:100;
+  height:100%;
+  width:100%;
+  text-align: left;
 }
 
-#reg_name_input {
+#close {
+  z-index: 101;
+  position: inherit;
+  top:0;
+  right:0;
+  height:2em;
+  width:2em;
+  background: url(img/remove.png);
+  background-size: Auto 100%;
+}
+
+#songs-list ul {
+  display: table;
+  width:100%;
+  margin: 0;
+  margin-top: 2em;
+  list-style:none;
+  padding: 0;
+}
+#songs-list ul li {
+  height:3em;
+}
+#songs-list ul li:nth-child(odd) {
+    background: white;
+}
+#songs-list ul li:nth-child(even) {
+    background: #F0F0F0 ;
+}
+#songs-list ul li a {
+  display: table-cell;
+  width: 3em;
+  height: 3em;
+}
+#songs-list ul li span {
+  display: table-cell;
+  vertical-align: middle;
 }
