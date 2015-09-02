@@ -237,6 +237,9 @@ body {
   display: inline-block;
   border: 1px solid black;
   padding: 5em;
+  -webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
+  -moz-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
+  box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
 }
 
 #songs-list {
@@ -244,16 +247,27 @@ body {
   top: 0;
   left: 0;
   background: white;
+  width: -moz-calc(100% - 4em);
+  width: -webkit-calc(100% - 4em);
+  width: -o-calc(100% - 4em);
+  width: calc(100% - 4em);
+  height: -moz-calc(100% - 4em);
+  height: -webkit-calc(100% - 4em);
+  height: -o-calc(100% - 4em);
+  height: calc(100% - 4em);
+  margin: 2em;
   z-index:100;
-  height:100%;
-  width:100%;
   text-align: left;
+  border: 1px solid black;
+  -webkit-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
+  -moz-box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
+  box-shadow: 2px 2px 3px 2px rgba(0,0,0,0.5);
 }
 
 #close {
   z-index: 101;
   position: inherit;
-  top:0;
+  left:0;
   right:0;
   height:2em;
   width:2em;
