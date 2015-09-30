@@ -1,3 +1,6 @@
+<?php
+error_reporting(0);
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +28,7 @@ if (!empty($_POST)) {
       echo "Соединение установлено с " . mysqli_get_host_info ($link) . ".<br />";
       echo "Открываем SQL файл...<br />";
       $sql = file_get_contents("./icecast.sql");
-      if (!$sql) {die ("Ошибка открытия SQL файла");}
+      if (!$sql) {die ("Ошибка открытия SQL файла.");}
       echo "Обрабатываем SQL файл....<br />";
       mysqli_multi_query($link,$sql) or die("Ошибка: " . mysqli_error($link));
       mysqli_close($link);
@@ -34,7 +37,7 @@ if (!empty($_POST)) {
     } 
     if ($config) {
       echo "Открываем файл настроек...<br />";
-      $file = fopen("config_db.php","w");
+      $file = fopen("config_db.php","w") or die("Ошибка открытия файла настроек.");
       $config = "<?php\n";
       $config .= '  define("DBHOST", "' . $dbhost . '");' . "\n";
       $config .= '  define("DBUSER", "' . $dbuser . '");' . "\n";
@@ -42,7 +45,7 @@ if (!empty($_POST)) {
       $config .= '  define("DBNAME", "' . $dbname . '");' . "\n";
       $config .= "?>";
       echo "Записываем файл настроек...<br />";
-      fwrite($file,$config);
+      fwrite($file,$config) or die("Ошибка записи файла настроек.");
       fclose($file);
       echo "Файл настроек записан.<br />";
       echo "<a href=./>На главную</a>";
