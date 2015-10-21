@@ -59,17 +59,17 @@ xmlhttp.onreadystatechange=function() {
   }
 }
 /* Init */
-function init() {
-  getStations();
-/* 
+function init(page) {
+  if (page) getStations();
+ 
   username = getCookie("username");
   if(username) {
     document.getElementById("user-name").innerHTML = username;
   }
   addHandler(window, 'DOMMouseScroll', wheel); /* Gecko */
   //addHandler(window, 'mousewheel', wheel); /* Opera */
- /* addHandler(document, 'mousewheel', wheel); /* IE */
-/*  addHandler(document, 'keyup', keyboard);
+  addHandler(document, 'mousewheel', wheel); /* IE */
+  addHandler(document, 'keyup', keyboard);
   addHandler(document, 'touchstart', touchStart);
   addHandler(document, 'touchmove', touchMove);
   addHandler(document, 'touchend', touchEnd);
@@ -94,7 +94,7 @@ function addHandler(object, event, handler, useCapture) {
     } else if (object.attachEvent) {
         object.attachEvent('on' + event, handler);
     } else console.log("Add handler is not supported");
-*/
+
 }
 
 /* Handlers */
@@ -426,5 +426,86 @@ function setCookie(name, value, options) {
 }
 
 function createPage(data) {
-  console.log(data);
+  var carousel = document.getElementById('icecastCarousel');
+  var carouselIndicators = document.getElementById('carousel-indicators');
+  var carouselInner = document.getElementById('carousel-inner');
+
+  var i = 0;
+  for (var key in data) {
+    console.log(data[key]);
+    console.log(key);
+    var carouselIndicator = document.createElement('li');
+    carouselIndicator.setAttribute('data-target', '#icecastCarousel');
+    carouselIndicator.setAttribute('data-slide-to', i);
+    if (i == 0) carouselIndicator.className = "active";
+    carouselIndicators.appendChild(carouselIndicator);
+
+    var item = document.createElement('div');
+    item.className = "item";
+    if (i == 0) item.className += " active";
+    carouselInner.appendChild(item);
+
+    var img = document.createElement('img');
+    img.src = "icecast/img/stations/" + key + ".png";
+    item.appendChild(img);
+
+    var carouselCaption = document.createElement('div');
+    carouselCaption.className = "carousel-caption";
+    item.appendChild(carouselCaption);
+
+    var stName = document.createElement('div');
+    stName.className = "stName";
+    stName.innerHTML = data[key];
+    carouselCaption.appendChild(stName);
+
+    var songName = document.createElement('div');
+    songName.id = key + "songName"
+    songName.className = "songName";
+    carouselCaption.appendChild(songName);
+
+    var spinner = document.createElement('div');
+    spinner.className = "spinner";
+    spinner.id = key + "spinner"
+    carouselCaption.appendChild(spinner);
+
+    var imgSpinner = document.createElement('img');
+    imgSpinner.src = "icecast/img/stations/" + key + ".png";
+    imgSpinner.src = "icecast/img/spinner.gif";
+    imgSpinner.setAttribute('alt', 'Loading');
+    spinner.appendChild(imgSpinner);
+
+    var btnGroup = document.createElement('div');
+    btnGroup.className = "btn-group";
+    carouselCaption.appendChild(btnGroup);
+
+    var refresh = document.createElement('a');
+    refresh.id = key + "Refresh"
+    refresh.className = "btn btn-default";
+    refresh.setAttribute('aria-label', 'Обновить');
+    refresh.innerHTML = "<span class=\"glyphicon glyphicon glyphicon-refresh\" aria-hidden=\"true\"></span>";
+    btnGroup.appendChild(refresh);
+
+    var search = document.createElement('a');
+    search.id = key + "Search"
+    search.className = "btn btn-default";
+    search.setAttribute('aria-label', 'Поиск');
+    search.innerHTML = "<span class=\"glyphicon glyphicon glyphicon-search\" aria-hidden=\"true\"></span>";
+    btnGroup.appendChild(search);
+
+    var save = document.createElement('a');
+    save.id = key + "Save"
+    save.className = "btn btn-default";
+    save.setAttribute('aria-label', 'Сохранить');
+    save.innerHTML = "<span class=\"glyphicon glyphicon glyphicon-save\" aria-hidden=\"true\"></span>";
+    btnGroup.appendChild(save);
+
+    var open = document.createElement('a');
+    open.id = key + "Load"
+    open.className = "btn btn-default";
+    open.setAttribute('aria-label', 'Сохраненные композиции');
+    open.innerHTML = "<span class=\"glyphicon glyphicon glyphicon-open\" aria-hidden=\"true\"></span>";
+    btnGroup.appendChild(open);
+
+    i++;
+  }
 }
