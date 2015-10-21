@@ -432,8 +432,6 @@ function createPage(data) {
 
   var i = 0;
   for (var key in data) {
-    console.log(data[key]);
-    console.log(key);
     var carouselIndicator = document.createElement('li');
     carouselIndicator.setAttribute('data-target', '#icecastCarousel');
     carouselIndicator.setAttribute('data-slide-to', i);
