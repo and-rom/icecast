@@ -61,7 +61,7 @@ xmlhttp.onreadystatechange=function() {
 /* Init */
 function init(page) {
   if (page) getStations();
- 
+
   username = getCookie("username");
   if(username) {
     document.getElementById("user-name").innerHTML = username;
@@ -477,6 +477,7 @@ function createPage(data) {
     carouselCaption.appendChild(btnGroup);
 
     var refresh = document.createElement('a');
+    refresh.href = "#";
     refresh.id = key + "Refresh"
     refresh.className = "btn btn-default";
     refresh.setAttribute('aria-label', 'Обновить');
@@ -484,6 +485,7 @@ function createPage(data) {
     btnGroup.appendChild(refresh);
 
     var search = document.createElement('a');
+    search.href = "#";
     search.id = key + "Search"
     search.className = "btn btn-default";
     search.setAttribute('aria-label', 'Поиск');
@@ -491,6 +493,7 @@ function createPage(data) {
     btnGroup.appendChild(search);
 
     var save = document.createElement('a');
+    save.href = "#";
     save.id = key + "Save"
     save.className = "btn btn-default";
     save.setAttribute('aria-label', 'Сохранить');
@@ -498,6 +501,7 @@ function createPage(data) {
     btnGroup.appendChild(save);
 
     var open = document.createElement('a');
+    open.href = "#";
     open.id = key + "Load"
     open.className = "btn btn-default";
     open.setAttribute('aria-label', 'Сохраненные композиции');
