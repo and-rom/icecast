@@ -199,7 +199,7 @@ if (!empty($_GET)){
       case "list":
         $obj = new stdClass;
         $obj->action = "list";
-        $obj->stations = $list;
+        $obj->stations = $names;
         $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
         break;
       default:
