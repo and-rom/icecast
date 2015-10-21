@@ -6,6 +6,8 @@ var xDown,yDown,xUp,yUp = null;
 var strings = {
   'SAVED':          'Сохранено',
   'SAVING':         'Сохранение...',
+  'DELETED':        'Удалено',
+  'DELETING':       'Удаление...',
   'TEST':           'Тест',
   'UPD_ALL':        'Обновление всех радиостанций...',
   'UPD':            'Обновление...',
@@ -40,8 +42,16 @@ xmlhttp.onreadystatechange=function() {
           var msg = (data.status == "ok" ? strings.SAVED : (data.status == "error" ? data.error_msg : "???"))
           toaster(msg);
         break;
+      case "delete":
+          var msg = (data.status == "ok" ? strings.DELETED : (data.status == "error" ? data.error_msg : "???"))
+          toaster(msg);
+          if (data.status == "ok") remove_li (data.id)
+        break;
       case "load":
         display(data.songs);
+        break;
+      case "list":
+        createPage(data.stations);
         break;
       default:
         console.log('Действие указано не верно');
@@ -50,14 +60,16 @@ xmlhttp.onreadystatechange=function() {
 }
 /* Init */
 function init() {
+  getStations();
+/* 
   username = getCookie("username");
   if(username) {
     document.getElementById("user-name").innerHTML = username;
   }
   addHandler(window, 'DOMMouseScroll', wheel); /* Gecko */
   //addHandler(window, 'mousewheel', wheel); /* Opera */
-  addHandler(document, 'mousewheel', wheel); /* IE */
-  addHandler(document, 'keyup', keyboard);
+ /* addHandler(document, 'mousewheel', wheel); /* IE */
+/*  addHandler(document, 'keyup', keyboard);
   addHandler(document, 'touchstart', touchStart);
   addHandler(document, 'touchmove', touchMove);
   addHandler(document, 'touchend', touchEnd);
@@ -82,6 +94,7 @@ function addHandler(object, event, handler, useCapture) {
     } else if (object.attachEvent) {
         object.attachEvent('on' + event, handler);
     } else console.log("Add handler is not supported");
+*/
 }
 
 /* Handlers */
@@ -154,11 +167,16 @@ function touchEnd(evt) {
   yUp = null;
 }
 
+function getStations(data) {
+  xmlhttp.open("GET","/icecast/ice.php?action=list",false);
+  xmlhttp.send();
+}
+
 function request(data) {
   if (data == "all") {var msg = strings.UPD_ALL;} else {var msg = strings.UPD;}
   toaster (msg);
   spinner_on(data);
-  xmlhttp.open("GET","ice.php?action=request&station="+data,true);
+  xmlhttp.open("GET","/icecast/ice.php?action=request&station="+data,true);
   xmlhttp.send();
 }
 
@@ -166,7 +184,7 @@ function save(data) {
   if(username) {
   toaster (strings.SAVING);
   var song = document.getElementById(data+"songName").innerHTML;
-  xmlhttp.open("GET","ice.php?user=" + username + "&action=save&station="+data+"&song="+song,true);
+  xmlhttp.open("GET","/icecast/ice.php?user=" + username + "&action=save&station="+data+"&song=" + song,true);
   xmlhttp.send();
   } else {
      toaster (strings.PLS_REG);
@@ -175,8 +193,8 @@ function save(data) {
 
 function refresh(data) {
   for (var key in data) {
-    document.getElementById(key+"songName").innerHTML=data[key];
-    document.getElementById(key+"Search").href="https://www.google.ru/search?q="+data[key];
+    document.getElementById(key+"songName").innerHTML = data[key];
+    document.getElementById(key+"Search").href = "https://www.google.ru/search?q=" + data[key];
     spinner_off(key);
   }
 }
@@ -203,6 +221,7 @@ function display(data) {
       var song_list_remove = document.createElement('a');
       var song_list_name = document.createElement('span');
 
+      song_list_song.setAttribute("id","line" + data[i].id);
       song_list_search.setAttribute("target","_blank");
       song_list_search.setAttribute("class","search");
       song_list_search.setAttribute("title",strings.SEARCH);
@@ -231,7 +250,30 @@ function display(data) {
 }
 
 function remove() {
-  consoloe.log("remove");
+  if(username) {
+  toaster (strings.DELETING);
+  xmlhttp.open("GET","/icecast/ice.php?user=" + username + "&action=delete&song=" + this.id,true);
+  xmlhttp.send();
+  } else {
+     toaster (strings.PLS_REG);
+  }
+}
+
+function remove_li(id) {
+  var song_list_container = document.getElementById("songs-list");
+  var song_list = song_list_container.getElementsByTagName("ul")[0];
+  var song_list_song = document.getElementById("line" + id);
+
+  song_list_song.parentNode.removeChild(song_list_song);
+
+  if (song_list.getElementsByTagName('li').length < 1) {
+    song_list_container.removeChild(song_list);
+
+    var song_list_empty = document.createElement('p');
+    song_list_empty.innerHTML=strings.EMPTY;
+
+    song_list_container.appendChild(song_list_empty);
+  }
 }
 
 function list_close() {
@@ -240,7 +282,7 @@ function list_close() {
 
 function load(data) {
   if(username) {
-    xmlhttp.open("GET","ice.php?user=" + username + "&action=load&station=" + data,true);
+    xmlhttp.open("GET","/icecast/ice.php?user=" + username + "&action=load&station=" + data,true);
     xmlhttp.send();
   } else {
     toaster (strings.PLS_REG);
@@ -381,4 +423,8 @@ function setCookie(name, value, options) {
     }
   }
   document.cookie = updatedCookie;
+}
+
+function createPage(data) {
+  console.log(data);
 }

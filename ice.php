@@ -11,7 +11,7 @@ function connect () {
 }
 
 function save ($station,$song,$username) {
-  if (!empty($username) or !empty($song)) {
+  if (!empty($username) and !empty($song)) {
     $link = connect();
     $song = mysqli_real_escape_string($link,$song);
     $query = "INSERT INTO `songs` (station,song,user) VALUES ('$station','$song','$username')";
@@ -53,6 +53,29 @@ function load ($station,$username) {
   } else {
       $obj->status = "error";
       $obj->error_msg = "No username given.";
+  }
+  return json_encode($obj,JSON_UNESCAPED_UNICODE);
+}
+
+function delete ($song,$username) {
+  if (!empty($username) and !empty($song)) {
+    $link = connect();
+    $song = mysqli_real_escape_string($link,$song);
+    $query = "DELETE FROM `songs` WHERE `songs`.`id` = '$song' AND `user` = '$username'";
+    mysqli_query($link,$query);
+    $result = (mysqli_affected_rows($link) > 0 ? true : false);
+    $err_msg = (empty(mysqli_error($link)) ? ($result ? "" : "Not deleted") : mysqli_error($link));
+  } else {
+    $err_msg = "No username or song id given.";
+  }
+  $obj = new stdClass;
+  $obj->action = "delete";
+  if (empty($err_msg)) {
+    $obj->id = $song;
+    $obj->status = "ok";
+  } else {
+    $obj->status = "error";
+    $obj->error_msg = $err_msg;
   }
   return json_encode($obj,JSON_UNESCAPED_UNICODE);
 }
@@ -114,42 +137,64 @@ function stationRequest($name) {
   }
   else {
     $encoding = mb_detect_encoding($result, "auto");
-    //echo $encoding." ";
-
-    //$result = utf8_encode($result);
-    //$result = iconv('ASCII', 'UTF-8//IGNORE', $result);
-    //$result = mb_convert_encoding( $result, "UTF-8", $encoding);
-
-    //$encoding = mb_detect_encoding($a, "auto");
-    //echo " ".$encoding;
+    /** Encoding tests
+    * echo $encoding." ";
+    * $result = utf8_encode($result);
+    * $result = iconv('ASCII', 'UTF-8//IGNORE', $result);
+    * $result = mb_convert_encoding( $result, "UTF-8", $encoding);
+    * $encoding = mb_detect_encoding($a, "auto");
+    * echo " ".$encoding;
+    */
   }
   return $result;
 }
 
-if (!empty($_GET) and isset($_GET["station"]) and isset($_GET["action"])){
-  $action=$_GET["action"];
-  $station=$_GET["station"];
-  $username=($_GET["user"] ? $_GET["user"] : "");
-  if (in_array($station, $list) or $station == "all") {
+function request($station) {
+global $list;
+  $obj = new stdClass;
+  if (empty($station)) {
+    $obj->status = "error";
+    $obj->error_msg = "No station given.";
+    $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
+    return $result;
+  } elseif (!in_array($station, $list) and $station != "all") {
+      $obj->status = "error";
+      $obj->error_msg = "Wrong station.";
+      $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
+      return $result;
+  } else {
+     if ($station == "all") {
+       foreach ($list as $name) {
+         $stations[$name]=stationRequest($name);
+       }
+     } else {
+       $stations[$station]=stationRequest($station);
+     }
+     $obj->action = "refresh";
+     $obj->response = $stations;
+     $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
+     return $result;
+  }
+}
+
+
+if (!empty($_GET)){
+  $action = (isset($_GET["action"]) ? $_GET["action"] : "");
+  $station = (isset($_GET["station"]) ? $_GET["station"] : "");
+  $username = (isset($_GET["user"]) ? $_GET["user"] : "");
+  $song = (isset($_GET["song"]) ? $_GET["song"] : "");
     switch ($action) {
       case "request":
-        if ($station == "all") {
-          foreach ($list as $station) {
-            $stations[$station]=stationRequest($station);
-          }
-        } else {
-           $stations[$station]=stationRequest($station);
-        }
-        $obj = new stdClass;
-        $obj->action = "refresh";
-        $obj->response = $stations;
-        $result = json_encode($obj,JSON_UNESCAPED_UNICODE);;
+        $result = request($station);
         break;
       case "save":
-        $result = save ($station,($_GET["song"] ? $_GET["song"] : ""),$username);
+        $result = save ($station,$song,$username);
         break;
       case "load":
         $result = load ($station,$username);
+        break;
+      case "delete":
+        $result = delete ($song,$username);
         break;
       case "list":
         $obj = new stdClass;
@@ -160,20 +205,14 @@ if (!empty($_GET) and isset($_GET["station"]) and isset($_GET["action"])){
       default:
         $obj = new stdClass;
         $obj->status = "error";
-        $obj->error_msg = "Wrong action.";
+        $obj->error_msg = "Wrong or empty action.";
         $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
         break;
     }
-  } else {
-    $obj = new stdClass;
-    $obj->status = "error";
-    $obj->error_msg = "Wrong station.";
-    $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
-  }
 } else {
   $obj = new stdClass;
   $obj->status = "error";
-  $obj->error_msg = "No action os station given.";
+  $obj->error_msg = "Empty request";
   $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
 }
 

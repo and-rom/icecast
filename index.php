@@ -29,7 +29,7 @@ foreach ($list as $station) {
           </div>
           <div class="songName" id="<?=$station?>songName"></div>
           <div class="spinner" id="<?=$station?>spinner">
-            <img id="img-spinner" src="spinner.gif" alt="Loading"/>
+            <img id="img-spinner" src="img/spinner.gif" alt="Loading"/>
           </div>
           </div>
           <div calss="car">
