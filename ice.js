@@ -467,7 +467,6 @@ function createPage(data) {
     carouselCaption.appendChild(spinner);
 
     var imgSpinner = document.createElement('img');
-    imgSpinner.src = "icecast/img/stations/" + key + ".png";
     imgSpinner.src = "icecast/img/spinner.gif";
     imgSpinner.setAttribute('alt', 'Loading');
     spinner.appendChild(imgSpinner);
