@@ -19,32 +19,32 @@ include_once('config.php');
     <div class="frame">
       <div id="wrapper" >
 <?php
-foreach ($list as $station) {
+foreach ($names as $name=>$title) {
 ?>
       <div class="container">
         <div class="station">
           <div class="stName">
-            <span><?=$names[$station]?></span>
-            <a class="load" id="<?=$station?>Load" href="#"  title="Сохраненные композиции"><img src="img/stations/<?=$station?>.png" /></a>
+            <span><?=$title?></span>
+            <a class="load" id="<?=$name?>Load" href="#"  title="Сохраненные композиции"><img src="img/stations/<?=$name?>.png" /></a>
           </div>
-          <div class="songName" id="<?=$station?>songName"></div>
-          <div class="spinner" id="<?=$station?>spinner">
+          <div class="songName" id="<?=$name?>songName"></div>
+          <div class="spinner" id="<?=$name?>spinner">
             <img id="img-spinner" src="img/spinner.gif" alt="Loading"/>
           </div>
           </div>
           <div calss="car">
 <?php
-  for ($i = 0; $i < count($list); $i++) {
+  foreach ($names as $_name=>$_title) {
 ?>
-          <span class="dot<?=($list[$i] == $station ? " dot-active" : "");?>"></span>
+          <span class="dot<?=($_name == $name ? " dot-active" : "");?>"></span>
 <?
   }
 ?>
           </div>
           <div class="links">
-            <a class="refresh"  id="<?=$station?>Refresh" href="#" title="Обновить"></a>
-            <a class="search" id="<?=$station?>Search" target="_blank" href="#" title="Поиск"></a>
-            <a class="save" id="<?=$station?>Save" href="#" title="Сохранить"></a>
+            <a class="refresh"  id="<?=$name?>Refresh" href="#" title="Обновить"></a>
+            <a class="search" id="<?=$name?>Search" target="_blank" href="#" title="Поиск"></a>
+            <a class="save" id="<?=$name?>Save" href="#" title="Сохранить"></a>
           </div>
         </div>
 <?

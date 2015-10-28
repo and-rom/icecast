@@ -1,7 +1,7 @@
 <?php
 include_once('config.php');
 include_once('config_db.php');
-error_reporting(0);
+//error_reporting(0);
 
 function connect () {
   $link = mysqli_connect(DBHOST, DBUSER, DBPASS) or die("Connection error: " . mysqli_error($link));
@@ -99,6 +99,7 @@ function delete ($song,$username) {
         $default = stream_context_set_default($opts);
 
         $stream = fopen($steam_url, 'r');
+        if (!$stream) return false;
 
         if($stream && ($meta_data = stream_get_meta_data($stream)) && isset($meta_data['wrapper_data'])){
             foreach ($meta_data['wrapper_data'] as $header){
@@ -150,21 +151,21 @@ function stationRequest($name) {
 }
 
 function request($station) {
-global $list;
+global $names;
   $obj = new stdClass;
   if (empty($station)) {
     $obj->status = "error";
     $obj->error_msg = "No station given.";
     $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
     return $result;
-  } elseif (!in_array($station, $list) and $station != "all") {
+  } elseif (!in_array($station, array_keys($names)) and $station != "all") {
       $obj->status = "error";
       $obj->error_msg = "Wrong station.";
       $result = json_encode($obj,JSON_UNESCAPED_UNICODE);
       return $result;
   } else {
      if ($station == "all") {
-       foreach ($list as $name) {
+       foreach ($names as $name=>$title) {
          $stations[$name]=stationRequest($name);
        }
      } else {
