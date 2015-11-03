@@ -99,7 +99,7 @@ function delete ($song,$username) {
         $default = stream_context_set_default($opts);
 
         $stream = fopen($steam_url, 'r');
-        if (!$stream) return false;
+        if (!$stream) return "Failed to update.";
 
         if($stream && ($meta_data = stream_get_meta_data($stream)) && isset($meta_data['wrapper_data'])){
             foreach ($meta_data['wrapper_data'] as $header){
