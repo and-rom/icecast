@@ -1,7 +1,7 @@
 <?php
+error_reporting(0);
 include_once('config.php');
 include_once('config_db.php');
-//error_reporting(0);
 
 function connect () {
   $link = mysqli_connect(DBHOST, DBUSER, DBPASS) or die("Connection error: " . mysqli_error($link));
@@ -132,11 +132,11 @@ function delete ($song,$username) {
 function stationRequest($name) {
   $url = 'http://nashe2.hostingradio.ru:80/'.$name.'-128.mp3';
   $result = getMp3StreamTitle($url);
-  $result = str_replace ("_VOICE","",$result);
   if (strlen($result)<=0) {
     $result = "No Song.";
   }
   else {
+    $result = str_replace ("_VOICE","",$result);
     $encoding = mb_detect_encoding($result, "auto");
     /** Encoding tests
     * echo $encoding." ";
