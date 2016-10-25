@@ -64,7 +64,8 @@ function delete ($song,$username) {
     $query = "DELETE FROM `songs` WHERE `songs`.`id` = '$song' AND `user` = '$username'";
     mysqli_query($link,$query);
     $result = (mysqli_affected_rows($link) > 0 ? true : false);
-    $err_msg = (empty(mysqli_error($link)) ? ($result ? "" : "Not deleted") : mysqli_error($link));
+    $mysql_error = mysqli_error($link);
+    $err_msg = (empty($mysql_error) ? ($result ? "" : "Not deleted") : $mysql_error);
   } else {
     $err_msg = "No username or song id given.";
   }
