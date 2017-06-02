@@ -21,7 +21,7 @@ SET time_zone = "+00:00";
 --
 -- База данных: `icecast`
 --
--- CREATE DATABASE IF NOT EXISTS `icecast` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+-- CREATE DATABASE IF NOT EXISTS `icecast` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 -- USE `icecast`;
 
 -- --------------------------------------------------------
