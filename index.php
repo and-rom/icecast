@@ -37,7 +37,7 @@ foreach ($names as $name=>$title) {
   foreach ($names as $_name=>$_title) {
 ?>
           <span class="dot<?=($_name == $name ? " dot-active" : "");?>"></span>
-<?
+<?php
   }
 ?>
           </div>
@@ -47,7 +47,7 @@ foreach ($names as $name=>$title) {
             <a class="save" id="<?=$name?>Save" href="#" title="Сохранить"></a>
           </div>
         </div>
-<?
+<?php
 }
 ?>
       </div>
